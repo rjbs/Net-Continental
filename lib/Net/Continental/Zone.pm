@@ -3,6 +3,8 @@ use warnings;
 no warnings 'once';
 package Net::Continental::Zone;
 
+our $VERSION = '0.001';
+
 use Net::Domain::TLD ();
 
 sub _new { bless $_[1] => $_[0] }
