@@ -534,4 +534,8 @@ sub zone {
   return $zone{ $code };
 }
 
+sub known_zone_codes {
+  return keys %zone
+}
+
 1;
