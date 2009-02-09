@@ -3,6 +3,7 @@ use warnings;
 
 package Net::Continental;
 use Carp ();
+use Net::Continental::Zone;
 use Scalar::Util qw(blessed);
 
 our %Continent = (
@@ -15,272 +16,515 @@ our %Continent = (
   Q => 'Antarctica',
 );
 
-# qw(in_nerd continent description)
+# qw(continent description)
 
 my %zone = (
-  ac => [ 0 => F => q{Ascension Island} ],
-  ax => [ 0 => E => q(Aland Islands) ],
-  bl => [ 0 => N => q(Saint Barthelemy) ],
-  cd => [ 0 => F => q{Congo, Democratic Republic of the} ],
-  eu => [ 0 => E => q{European Union} ],
-  im => [ 0 => E => q{Isle of Man} ],
-  je => [ 0 => E => q{Jersey} ],
-  me => [ 0 => E => q(Montenegro) ],
-  mf => [ 0 => N => q{Saint Martin (French part)} ],
-  rs => [ 0 => E => q(Serbia) ],
-  tl => [ 0 => A => q{Timor-Leste} ],
+  ac => [ F => q{Ascension Island} ],
+  ax => [ E => q(Aland Islands) ],
+  bl => [ N => q(Saint Barthelemy) ],
+  cd => [ F => q{Congo, Democratic Republic of the} ],
+  eu => [ E => q{European Union} ],
+  im => [ E => q{Isle of Man} ],
+  je => [ E => q{Jersey} ],
+  me => [ E => q(Montenegro) ],
+  mf => [ N => q{Saint Martin (French part)} ],
+  rs => [ E => q(Serbia) ],
+  tl => [ A => q{Timor-Leste} ],
         
-  ae => [ 1 => A => q{United Arab Emirates} ],
-  af => [ 1 => A => q{Afghanistan} ],
-  az => [ 1 => A => q{Azerbaijan} ],
-  bd => [ 1 => A => q{Bangladesh} ],
-  bh => [ 1 => A => q{Bahrain} ],
-  bt => [ 1 => A => q{Bhutan} ],
-  cn => [ 1 => A => q{China} ],
+  ae => [ A => q{United Arab Emirates} ],
+  af => [ A => q{Afghanistan} ],
+  az => [ A => q{Azerbaijan} ],
+  bd => [ A => q{Bangladesh} ],
+  bh => [ A => q{Bahrain} ],
+  bt => [ A => q{Bhutan} ],
+  cn => [ A => q{China} ],
         
   # classification of Georgia in Europe or Asia is touchy
-  ge => [ 1 => A => q{Georgia} ],
+  ge => [ A => q{Georgia} ],
         
-  hk => [ 1 => A => q{Hong Kong} ],
-  il => [ 1 => A => q{Israel} ],
-  in => [ 1 => A => q{India} ],
-  iq => [ 1 => A => q{Iraq} ],
-  ir => [ 1 => A => q{Iran (Islamic Republic of)} ],
-  jo => [ 1 => A => q{Jordan} ],
-  jp => [ 1 => A => q{Japan} ],
-  kg => [ 1 => A => q{Kyrgyzstan} ],
-  kh => [ 1 => A => q{Cambodia} ],
-  kp => [ 1 => A => q{Korea, Democratic People's Republic} ],
-  kr => [ 1 => A => q{Korea, Republic of} ],
-  kw => [ 1 => A => q{Kuwait} ],
-  kz => [ 1 => A => q{Kazakhstan} ],
-  la => [ 1 => A => q{Lao People's Democratic Republic} ],
-  lb => [ 1 => A => q{Lebanon} ],
-  lk => [ 1 => A => q{Sri Lanka} ],
-  mm => [ 1 => A => q{Myanmar} ],
-  mn => [ 1 => A => q{Mongolia} ],
-  mo => [ 1 => A => q{Macau} ],
-  mv => [ 1 => A => q{Maldives} ],
-  my => [ 1 => A => q{Malaysia} ],
-  np => [ 1 => A => q{Nepal} ],
-  om => [ 1 => A => q{Oman} ],
-  ph => [ 1 => A => q{Philippines} ],
-  pk => [ 1 => A => q{Pakistan} ],
-  ps => [ 1 => A => q{Palestinian Territories} ],
-  qa => [ 1 => A => q{Qatar} ],
-  ru => [ 1 => A => q{Russian Federation} ],
-  sa => [ 1 => A => q{Saudi Arabia} ],
-  sg => [ 1 => A => q{Singapore} ],
-  su => [ 1 => A => q{Soviet Union} ],
-  sy => [ 1 => A => q{Syrian Arab Republic} ],
-  th => [ 1 => A => q{Thailand} ],
-  tj => [ 1 => A => q{Tajikistan} ],
-  tm => [ 1 => A => q{Turkmenistan} ],
-  tp => [ 1 => A => q{East Timor} ],
-  tr => [ 1 => A => q{Turkey} ],
-  tw => [ 1 => A => q{Taiwan} ],
-  uz => [ 1 => A => q{Uzbekistan} ],
-  vn => [ 1 => A => q{Vietnam} ],
-  ye => [ 1 => A => q{Yemen} ],
-  ad => [ 1 => E => q{Andorra} ],
-  al => [ 1 => E => q{Albania} ],
-  am => [ 1 => E => q{Armenia} ],
-  at => [ 1 => E => q{Austria} ],
-  ba => [ 1 => E => q{Bosnia and Herzegovina} ],
-  be => [ 1 => E => q{Belgium} ],
-  bg => [ 1 => E => q{Bulgaria} ],
-  by => [ 1 => E => q{Belarus} ],
-  ch => [ 1 => E => q{Switzerland} ],
-  cy => [ 1 => E => q{Cyprus} ],
-  cz => [ 1 => E => q{Czech Republic} ],
-  de => [ 1 => E => q{Germany} ],
-  dk => [ 1 => E => q{Denmark} ],
-  ee => [ 1 => E => q{Estonia} ],
-  es => [ 1 => E => q{Spain} ],
-  fi => [ 1 => E => q{Finland} ],
-  fo => [ 1 => E => q{Faroe Islands} ],
-  fr => [ 1 => E => q{France} ],
-  fx => [ 1 => E => q{France, Metropolitan} ],
-  gb => [ 1 => E => q{United Kingdom} ],
-  gg => [ 1 => E => q{Guernsey} ],
-  gi => [ 1 => E => q{Gibraltar} ],
-  gr => [ 1 => E => q{Greece} ],
-  hr => [ 1 => E => q{Croatia/Hrvatska} ],
-  hu => [ 1 => E => q{Hungary} ],
-  ie => [ 1 => E => q{Ireland} ],
-  is => [ 1 => E => q{Iceland} ],
-  it => [ 1 => E => q{Italy} ],
-  li => [ 1 => E => q{Liechtenstein} ],
-  lt => [ 1 => E => q{Lithuania} ],
-  lu => [ 1 => E => q{Luxembourg} ],
-  lv => [ 1 => E => q{Latvia} ],
-  mc => [ 1 => E => q{Monaco} ],
-  md => [ 1 => E => q{Moldova, Republic of} ],
-  mk => [ 1 => E => q{Macedonia, Former Yugoslav Republic} ],
-  mt => [ 1 => E => q{Malta} ],
-  nl => [ 1 => E => q{Netherlands} ],
-  no => [ 1 => E => q{Norway} ],
-  pl => [ 1 => E => q{Poland} ],
-  pt => [ 1 => E => q{Portugal} ],
-  ro => [ 1 => E => q{Romania} ],
-  se => [ 1 => E => q{Sweden} ],
-  si => [ 1 => E => q{Slovenia} ],
-  sj => [ 1 => E => q{Svalbard and Jan Mayen Islands} ],
-  sk => [ 1 => E => q{Slovak Republic} ],
-  sm => [ 1 => E => q{San Marino} ],
-  ua => [ 1 => E => q{Ukraine} ],
-  uk => [ 1 => E => q{United Kingdom} ],
-  va => [ 1 => E => q{Holy See (City Vatican State)} ],
-  yu => [ 1 => E => q{Yugoslavia} ],
-  ao => [ 1 => F => q{Angola} ],
-  bf => [ 1 => F => q{Burkina Faso} ],
-  bi => [ 1 => F => q{Burundi} ],
-  bj => [ 1 => F => q{Benin} ],
-  bw => [ 1 => F => q{Botswana} ],
-  cf => [ 1 => F => q{Central African Republic} ],
-  cg => [ 1 => F => q{Congo, Republic of} ],
-  ci => [ 1 => F => q{Cote d'Ivoire} ],
-  cm => [ 1 => F => q{Cameroon} ],
-  cv => [ 1 => F => q{Cap Verde} ],
-  dj => [ 1 => F => q{Djibouti} ],
-  dz => [ 1 => F => q{Algeria} ],
-  eg => [ 1 => F => q{Egypt} ],
-  eh => [ 1 => F => q{Western Sahara} ],
-  er => [ 1 => F => q{Eritrea} ],
-  et => [ 1 => F => q{Ethiopia} ],
-  ga => [ 1 => F => q{Gabon} ],
-  gf => [ 1 => F => q{French Guiana} ],
-  gh => [ 1 => F => q{Ghana} ],
-  gm => [ 1 => F => q{Gambia} ],
-  gn => [ 1 => F => q{Guinea} ],
-  gq => [ 1 => F => q{Equatorial Guinea} ],
-  gw => [ 1 => F => q{Guinea-Bissau} ],
-  gy => [ 1 => F => q{Guyana} ],
-  ke => [ 1 => F => q{Kenya} ],
-  km => [ 1 => F => q{Comoros} ],
-  lr => [ 1 => F => q{Liberia} ],
-  ls => [ 1 => F => q{Lesotho} ],
-  ly => [ 1 => F => q{Libyan Arab Jamahiriya} ],
-  ma => [ 1 => F => q{Morocco} ],
-  mg => [ 1 => F => q{Madagascar} ],
-  ml => [ 1 => F => q{Mali} ],
-  mr => [ 1 => F => q{Mauritania} ],
-  mu => [ 1 => F => q{Mauritius} ],
-  mw => [ 1 => F => q{Malawi} ],
-  mz => [ 1 => F => q{Mozambique} ],
-  na => [ 1 => F => q{Namibia} ],
-  ne => [ 1 => F => q{Niger} ],
-  ng => [ 1 => F => q{Nigeria} ],
-  re => [ 1 => F => q{Reunion Island} ],
-  rw => [ 1 => F => q{Rwanda} ],
-  sc => [ 1 => F => q{Seychelles} ],
-  sd => [ 1 => F => q{Sudan} ],
-  sh => [ 1 => F => q{St. Helena} ],
-  sl => [ 1 => F => q{Sierra Leone} ],
-  sn => [ 1 => F => q{Senegal} ],
-  so => [ 1 => F => q{Somalia} ],
-  st => [ 1 => F => q{Sao Tome and Principe} ],
-  sz => [ 1 => F => q{Swaziland} ],
-  td => [ 1 => F => q{Chad} ],
-  tg => [ 1 => F => q{Togo} ],
-  tn => [ 1 => F => q{Tunisia} ],
-  to => [ 1 => F => q{Tonga} ],
-  tz => [ 1 => F => q{Tanzania} ],
-  ug => [ 1 => F => q{Uganda} ],
-  yt => [ 1 => F => q{Mayotte} ],
-  za => [ 1 => F => q{South Africa} ],
-  zm => [ 1 => F => q{Zambia} ],
-  zr => [ 1 => F => q{Zaire} ],
-  zw => [ 1 => F => q{Zimbabwe} ],
-  ag => [ 1 => N => q{Antigua and Barbuda} ],
-  ai => [ 1 => N => q{Anguilla} ],
-  an => [ 1 => N => q{Netherlands Antilles} ],
-  aw => [ 1 => N => q{Aruba} ],
-  bb => [ 1 => N => q{Barbados} ],
-  bm => [ 1 => N => q{Bermuda} ],
-  bo => [ 1 => N => q{Bolivia} ],
-  bs => [ 1 => N => q{Bahamas} ],
-  bz => [ 1 => N => q{Belize} ],
-  ca => [ 1 => N => q{Canada} ],
-  co => [ 1 => N => q{Colombia} ],
-  cr => [ 1 => N => q{Costa Rica} ],
-  cu => [ 1 => N => q{Cuba} ],
-  do => [ 1 => N => q{Dominican Republic} ],
-  ec => [ 1 => N => q{Ecuador} ],
-  gl => [ 1 => N => q{Greenland} ],
-  gt => [ 1 => N => q{Guatemala} ],
-  hn => [ 1 => N => q{Honduras} ],
-  ht => [ 1 => N => q{Haiti} ],
-  jm => [ 1 => N => q{Jamaica} ],
-  kn => [ 1 => N => q{Saint Kitts and Nevis} ],
-  lc => [ 1 => N => q{Saint Lucia} ],
-  mq => [ 1 => N => q{Martinique} ],
-  ms => [ 1 => N => q{Montserrat} ],
-  mx => [ 1 => N => q{Mexico} ],
-  ni => [ 1 => N => q{Nicaragua} ],
-  pa => [ 1 => N => q{Panama} ],
-  pm => [ 1 => N => q{St. Pierre and Miquelon} ],
-  pr => [ 1 => N => q{Puerto Rico} ],
-  sv => [ 1 => N => q{El Salvador} ],
-  tc => [ 1 => N => q{Turks and Caicos Islands} ],
-  tt => [ 1 => N => q{Trinidad and Tobago} ],
-  us => [ 1 => N => q{United States} ],
-  vc => [ 1 => N => q{Saint Vincent and the Grenadines} ],
-  vg => [ 1 => N => q{Virgin Islands (British)} ],
-  vi => [ 1 => N => q{Virgin Islands (USA)} ],
-  as => [ 1 => O => q{American Samoa} ],
-  au => [ 1 => O => q{Australia} ],
-  bn => [ 1 => O => q{Brunei Darussalam} ],
-  cc => [ 1 => O => q{Cocos (Keeling) Islands} ],
-  ck => [ 1 => O => q{Cook Islands} ],
-  cx => [ 1 => O => q{Christmas Island} ],
-  dm => [ 1 => O => q{Dominica} ],
-  fj => [ 1 => O => q{Fiji} ],
-  fm => [ 1 => O => q{Micronesia, Federated States of} ],
-  gu => [ 1 => O => q{Guam} ],
-  id => [ 1 => O => q{Indonesia} ],
-  io => [ 1 => O => q{British Indian Ocean Territory} ],
-  ki => [ 1 => O => q{Kiribati} ],
-  ky => [ 1 => O => q{Cayman Islands} ],
-  mh => [ 1 => O => q{Marshall Islands} ],
-  mp => [ 1 => O => q{Northern Mariana Islands} ],
-  nc => [ 1 => O => q{New Caledonia} ],
-  nf => [ 1 => O => q{Norfolk Island} ],
-  nr => [ 1 => O => q{Nauru} ],
-  nu => [ 1 => O => q{Niue} ],
-  nz => [ 1 => O => q{New Zealand} ],
-  pf => [ 1 => O => q{French Polynesia} ],
-  pg => [ 1 => O => q{Papua New Guinea} ],
-  pn => [ 1 => O => q{Pitcairn Island} ],
-  pw => [ 1 => O => q{Palau} ],
-  sb => [ 1 => O => q{Solomon Islands} ],
-  tk => [ 1 => O => q{Tokelau} ],
-  tv => [ 1 => O => q{Tuvalu} ],
-  um => [ 1 => O => q{US Minor Outlying Islands} ],
-  vu => [ 1 => O => q{Vanuatu} ],
-  wf => [ 1 => O => q{Wallis and Futuna Islands} ],
-  ws => [ 1 => O => q{Western Samoa} ],
-  aq => [ 1 => Q => q{Antartica} ],
-  bv => [ 1 => Q => q{Bouvet Island} ],
-  gs => [ 1 => Q => q{South Georgia and the South Sandwich Islands} ],
-  hm => [ 1 => Q => q{Heard and McDonald Islands} ],
-  tf => [ 1 => Q => q{French Southern Territories} ],
-  ar => [ 1 => S => q{Argentina} ],
-  br => [ 1 => S => q{Brazil} ],
-  cl => [ 1 => S => q{Chile} ],
-  fk => [ 1 => S => q{Falkland Islands (Malvina)} ],
-  gd => [ 1 => S => q{Grenada} ],
-  gp => [ 1 => S => q{Guadeloupe} ],
-  pe => [ 1 => S => q{Peru} ],
-  py => [ 1 => S => q{Paraguay} ],
-  sr => [ 1 => S => q{Suriname} ],
-  uy => [ 1 => S => q{Uruguay} ],
-  ve => [ 1 => S => q{Venezuela} ],
+  hk => [ A => q{Hong Kong} ],
+  il => [ A => q{Israel} ],
+  in => [ A => q{India} ],
+  iq => [ A => q{Iraq} ],
+  ir => [ A => q{Iran (Islamic Republic of)} ],
+  jo => [ A => q{Jordan} ],
+  jp => [ A => q{Japan} ],
+  kg => [ A => q{Kyrgyzstan} ],
+  kh => [ A => q{Cambodia} ],
+  kp => [ A => q{Korea, Democratic People's Republic} ],
+  kr => [ A => q{Korea, Republic of} ],
+  kw => [ A => q{Kuwait} ],
+  kz => [ A => q{Kazakhstan} ],
+  la => [ A => q{Lao People's Democratic Republic} ],
+  lb => [ A => q{Lebanon} ],
+  lk => [ A => q{Sri Lanka} ],
+  mm => [ A => q{Myanmar} ],
+  mn => [ A => q{Mongolia} ],
+  mo => [ A => q{Macau} ],
+  mv => [ A => q{Maldives} ],
+  my => [ A => q{Malaysia} ],
+  np => [ A => q{Nepal} ],
+  om => [ A => q{Oman} ],
+  ph => [ A => q{Philippines} ],
+  pk => [ A => q{Pakistan} ],
+  ps => [ A => q{Palestinian Territories} ],
+  qa => [ A => q{Qatar} ],
+  ru => [ A => q{Russian Federation} ],
+  sa => [ A => q{Saudi Arabia} ],
+  sg => [ A => q{Singapore} ],
+  su => [ A => q{Soviet Union} ],
+  sy => [ A => q{Syrian Arab Republic} ],
+  th => [ A => q{Thailand} ],
+  tj => [ A => q{Tajikistan} ],
+  tm => [ A => q{Turkmenistan} ],
+  tp => [ A => q{East Timor} ],
+  tr => [ A => q{Turkey} ],
+  tw => [ A => q{Taiwan} ],
+  uz => [ A => q{Uzbekistan} ],
+  vn => [ A => q{Vietnam} ],
+  ye => [ A => q{Yemen} ],
+  ad => [ E => q{Andorra} ],
+  al => [ E => q{Albania} ],
+  am => [ E => q{Armenia} ],
+  at => [ E => q{Austria} ],
+  ba => [ E => q{Bosnia and Herzegovina} ],
+  be => [ E => q{Belgium} ],
+  bg => [ E => q{Bulgaria} ],
+  by => [ E => q{Belarus} ],
+  ch => [ E => q{Switzerland} ],
+  cy => [ E => q{Cyprus} ],
+  cz => [ E => q{Czech Republic} ],
+  de => [ E => q{Germany} ],
+  dk => [ E => q{Denmark} ],
+  ee => [ E => q{Estonia} ],
+  es => [ E => q{Spain} ],
+  fi => [ E => q{Finland} ],
+  fo => [ E => q{Faroe Islands} ],
+  fr => [ E => q{France} ],
+  fx => [ E => q{France, Metropolitan} ],
+  gb => [ E => q{United Kingdom} ],
+  gg => [ E => q{Guernsey} ],
+  gi => [ E => q{Gibraltar} ],
+  gr => [ E => q{Greece} ],
+  hr => [ E => q{Croatia/Hrvatska} ],
+  hu => [ E => q{Hungary} ],
+  ie => [ E => q{Ireland} ],
+  is => [ E => q{Iceland} ],
+  it => [ E => q{Italy} ],
+  li => [ E => q{Liechtenstein} ],
+  lt => [ E => q{Lithuania} ],
+  lu => [ E => q{Luxembourg} ],
+  lv => [ E => q{Latvia} ],
+  mc => [ E => q{Monaco} ],
+  md => [ E => q{Moldova, Republic of} ],
+  mk => [ E => q{Macedonia, Former Yugoslav Republic} ],
+  mt => [ E => q{Malta} ],
+  nl => [ E => q{Netherlands} ],
+  no => [ E => q{Norway} ],
+  pl => [ E => q{Poland} ],
+  pt => [ E => q{Portugal} ],
+  ro => [ E => q{Romania} ],
+  se => [ E => q{Sweden} ],
+  si => [ E => q{Slovenia} ],
+  sj => [ E => q{Svalbard and Jan Mayen Islands} ],
+  sk => [ E => q{Slovak Republic} ],
+  sm => [ E => q{San Marino} ],
+  ua => [ E => q{Ukraine} ],
+  uk => [ E => q{United Kingdom} ],
+  va => [ E => q{Holy See (City Vatican State)} ],
+  yu => [ E => q{Yugoslavia} ],
+  ao => [ F => q{Angola} ],
+  bf => [ F => q{Burkina Faso} ],
+  bi => [ F => q{Burundi} ],
+  bj => [ F => q{Benin} ],
+  bw => [ F => q{Botswana} ],
+  cf => [ F => q{Central African Republic} ],
+  cg => [ F => q{Congo, Republic of} ],
+  ci => [ F => q{Cote d'Ivoire} ],
+  cm => [ F => q{Cameroon} ],
+  cv => [ F => q{Cap Verde} ],
+  dj => [ F => q{Djibouti} ],
+  dz => [ F => q{Algeria} ],
+  eg => [ F => q{Egypt} ],
+  eh => [ F => q{Western Sahara} ],
+  er => [ F => q{Eritrea} ],
+  et => [ F => q{Ethiopia} ],
+  ga => [ F => q{Gabon} ],
+  gf => [ F => q{French Guiana} ],
+  gh => [ F => q{Ghana} ],
+  gm => [ F => q{Gambia} ],
+  gn => [ F => q{Guinea} ],
+  gq => [ F => q{Equatorial Guinea} ],
+  gw => [ F => q{Guinea-Bissau} ],
+  gy => [ F => q{Guyana} ],
+  ke => [ F => q{Kenya} ],
+  km => [ F => q{Comoros} ],
+  lr => [ F => q{Liberia} ],
+  ls => [ F => q{Lesotho} ],
+  ly => [ F => q{Libyan Arab Jamahiriya} ],
+  ma => [ F => q{Morocco} ],
+  mg => [ F => q{Madagascar} ],
+  ml => [ F => q{Mali} ],
+  mr => [ F => q{Mauritania} ],
+  mu => [ F => q{Mauritius} ],
+  mw => [ F => q{Malawi} ],
+  mz => [ F => q{Mozambique} ],
+  na => [ F => q{Namibia} ],
+  ne => [ F => q{Niger} ],
+  ng => [ F => q{Nigeria} ],
+  re => [ F => q{Reunion Island} ],
+  rw => [ F => q{Rwanda} ],
+  sc => [ F => q{Seychelles} ],
+  sd => [ F => q{Sudan} ],
+  sh => [ F => q{St. Helena} ],
+  sl => [ F => q{Sierra Leone} ],
+  sn => [ F => q{Senegal} ],
+  so => [ F => q{Somalia} ],
+  st => [ F => q{Sao Tome and Principe} ],
+  sz => [ F => q{Swaziland} ],
+  td => [ F => q{Chad} ],
+  tg => [ F => q{Togo} ],
+  tn => [ F => q{Tunisia} ],
+  to => [ F => q{Tonga} ],
+  tz => [ F => q{Tanzania} ],
+  ug => [ F => q{Uganda} ],
+  yt => [ F => q{Mayotte} ],
+  za => [ F => q{South Africa} ],
+  zm => [ F => q{Zambia} ],
+  zr => [ F => q{Zaire} ],
+  zw => [ F => q{Zimbabwe} ],
+  ag => [ N => q{Antigua and Barbuda} ],
+  ai => [ N => q{Anguilla} ],
+  an => [ N => q{Netherlands Antilles} ],
+  aw => [ N => q{Aruba} ],
+  bb => [ N => q{Barbados} ],
+  bm => [ N => q{Bermuda} ],
+  bo => [ N => q{Bolivia} ],
+  bs => [ N => q{Bahamas} ],
+  bz => [ N => q{Belize} ],
+  ca => [ N => q{Canada} ],
+  co => [ N => q{Colombia} ],
+  cr => [ N => q{Costa Rica} ],
+  cu => [ N => q{Cuba} ],
+  do => [ N => q{Dominican Republic} ],
+  ec => [ N => q{Ecuador} ],
+  gl => [ N => q{Greenland} ],
+  gt => [ N => q{Guatemala} ],
+  hn => [ N => q{Honduras} ],
+  ht => [ N => q{Haiti} ],
+  jm => [ N => q{Jamaica} ],
+  kn => [ N => q{Saint Kitts and Nevis} ],
+  lc => [ N => q{Saint Lucia} ],
+  mq => [ N => q{Martinique} ],
+  ms => [ N => q{Montserrat} ],
+  mx => [ N => q{Mexico} ],
+  ni => [ N => q{Nicaragua} ],
+  pa => [ N => q{Panama} ],
+  pm => [ N => q{St. Pierre and Miquelon} ],
+  pr => [ N => q{Puerto Rico} ],
+  sv => [ N => q{El Salvador} ],
+  tc => [ N => q{Turks and Caicos Islands} ],
+  tt => [ N => q{Trinidad and Tobago} ],
+  us => [ N => q{United States} ],
+  vc => [ N => q{Saint Vincent and the Grenadines} ],
+  vg => [ N => q{Virgin Islands (British)} ],
+  vi => [ N => q{Virgin Islands (USA)} ],
+  as => [ O => q{American Samoa} ],
+  au => [ O => q{Australia} ],
+  bn => [ O => q{Brunei Darussalam} ],
+  cc => [ O => q{Cocos (Keeling) Islands} ],
+  ck => [ O => q{Cook Islands} ],
+  cx => [ O => q{Christmas Island} ],
+  dm => [ O => q{Dominica} ],
+  fj => [ O => q{Fiji} ],
+  fm => [ O => q{Micronesia, Federated States of} ],
+  gu => [ O => q{Guam} ],
+  id => [ O => q{Indonesia} ],
+  io => [ O => q{British Indian Ocean Territory} ],
+  ki => [ O => q{Kiribati} ],
+  ky => [ O => q{Cayman Islands} ],
+  mh => [ O => q{Marshall Islands} ],
+  mp => [ O => q{Northern Mariana Islands} ],
+  nc => [ O => q{New Caledonia} ],
+  nf => [ O => q{Norfolk Island} ],
+  nr => [ O => q{Nauru} ],
+  nu => [ O => q{Niue} ],
+  nz => [ O => q{New Zealand} ],
+  pf => [ O => q{French Polynesia} ],
+  pg => [ O => q{Papua New Guinea} ],
+  pn => [ O => q{Pitcairn Island} ],
+  pw => [ O => q{Palau} ],
+  sb => [ O => q{Solomon Islands} ],
+  tk => [ O => q{Tokelau} ],
+  tv => [ O => q{Tuvalu} ],
+  um => [ O => q{US Minor Outlying Islands} ],
+  vu => [ O => q{Vanuatu} ],
+  wf => [ O => q{Wallis and Futuna Islands} ],
+  ws => [ O => q{Western Samoa} ],
+  aq => [ Q => q{Antartica} ],
+  bv => [ Q => q{Bouvet Island} ],
+  gs => [ Q => q{South Georgia and the South Sandwich Islands} ],
+  hm => [ Q => q{Heard and McDonald Islands} ],
+  tf => [ Q => q{French Southern Territories} ],
+  ar => [ S => q{Argentina} ],
+  br => [ S => q{Brazil} ],
+  cl => [ S => q{Chile} ],
+  fk => [ S => q{Falkland Islands (Malvina)} ],
+  gd => [ S => q{Grenada} ],
+  gp => [ S => q{Guadeloupe} ],
+  pe => [ S => q{Peru} ],
+  py => [ S => q{Paraguay} ],
+  sr => [ S => q{Suriname} ],
+  uy => [ S => q{Uruguay} ],
+  ve => [ S => q{Venezuela} ],
+);
+
+our %nerd_response = qw(
+  ad	127.0.0.20
+  ae	127.0.3.16
+  af	127.0.0.4
+  ag	127.0.0.28
+  ai	127.0.2.148
+  al	127.0.0.8
+  am	127.0.0.51
+  an	127.0.2.18
+  ao	127.0.0.24
+  aq	127.0.0.10
+  ar	127.0.0.32
+  as	127.0.0.16
+  at	127.0.0.40
+  au	127.0.0.36
+  aw	127.0.2.21
+  az	127.0.0.31
+  ba	127.0.0.70
+  bb	127.0.0.52
+  bd	127.0.0.50
+  be	127.0.0.56
+  bf	127.0.3.86
+  bg	127.0.0.100
+  bh	127.0.0.48
+  bi	127.0.0.108
+  bj	127.0.0.204
+  bm	127.0.0.60
+  bn	127.0.0.96
+  bo	127.0.0.68
+  br	127.0.0.76
+  bs	127.0.0.44
+  bt	127.0.0.64
+  bv	127.0.0.74
+  bw	127.0.0.72
+  by	127.0.0.112
+  bz	127.0.0.84
+  ca	127.0.0.124
+  cc	127.0.0.166
+  cf	127.0.0.140
+  cg	127.0.0.178
+  ch	127.0.2.244
+  ci	127.0.1.128
+  ck	127.0.0.184
+  cl	127.0.0.152
+  cm	127.0.0.120
+  cn	127.0.0.156
+  co	127.0.0.170
+  cr	127.0.0.188
+  cu	127.0.0.192
+  cv	127.0.0.132
+  cx	127.0.0.162
+  cy	127.0.0.196
+  cz	127.0.0.203
+  de	127.0.1.20
+  dj	127.0.1.6
+  dk	127.0.0.208
+  dm	127.0.0.212
+  do	127.0.0.214
+  dz	127.0.0.12
+  ec	127.0.0.218
+  ee	127.0.0.233
+  eg	127.0.3.50
+  eh	127.0.2.220
+  er	127.0.0.232
+  es	127.0.2.212
+  et	127.0.0.231
+  fi	127.0.0.246
+  fj	127.0.0.242
+  fk	127.0.0.238
+  fm	127.0.2.71
+  fo	127.0.0.234
+  fr	127.0.0.250
+  fx	127.0.0.249
+  ga	127.0.1.10
+  gb	127.0.3.58
+  gd	127.0.1.52
+  ge	127.0.1.12
+  gf	127.0.0.254
+  gh	127.0.1.32
+  gi	127.0.1.36
+  gl	127.0.1.48
+  gm	127.0.1.14
+  gn	127.0.1.68
+  gp	127.0.1.56
+  gq	127.0.0.226
+  gr	127.0.1.44
+  gs	127.0.0.239
+  gt	127.0.1.64
+  gu	127.0.1.60
+  gw	127.0.2.112
+  gy	127.0.1.72
+  hk	127.0.1.88
+  hm	127.0.1.78
+  hn	127.0.1.84
+  hr	127.0.0.191
+  ht	127.0.1.76
+  hu	127.0.1.92
+  id	127.0.1.104
+  ie	127.0.1.116
+  il	127.0.1.120
+  in	127.0.1.100
+  io	127.0.0.86
+  iq	127.0.1.112
+  ir	127.0.1.108
+  is	127.0.1.96
+  it	127.0.1.124
+  jm	127.0.1.132
+  jo	127.0.1.144
+  jp	127.0.1.136
+  ke	127.0.1.148
+  kg	127.0.1.161
+  kh	127.0.0.116
+  ki	127.0.1.40
+  km	127.0.0.174
+  kn	127.0.2.147
+  kp	127.0.1.152
+  kr	127.0.1.154
+  kw	127.0.1.158
+  ky	127.0.0.136
+  kz	127.0.1.142
+  la	127.0.1.162
+  lb	127.0.1.166
+  lc	127.0.2.150
+  li	127.0.1.182
+  lk	127.0.0.144
+  lr	127.0.1.174
+  ls	127.0.1.170
+  lt	127.0.1.184
+  lu	127.0.1.186
+  lv	127.0.1.172
+  ly	127.0.1.178
+  ma	127.0.1.248
+  mc	127.0.1.236
+  md	127.0.1.242
+  mg	127.0.1.194
+  mh	127.0.2.72
+  mk	127.0.3.39
+  ml	127.0.1.210
+  mm	127.0.0.104
+  mn	127.0.1.240
+  mo	127.0.1.190
+  mp	127.0.2.68
+  mq	127.0.1.218
+  mr	127.0.1.222
+  ms	127.0.1.244
+  mt	127.0.1.214
+  mu	127.0.1.224
+  mv	127.0.1.206
+  mw	127.0.1.198
+  mx	127.0.1.228
+  my	127.0.1.202
+  mz	127.0.1.252
+  na	127.0.2.4
+  nc	127.0.2.28
+  ne	127.0.2.50
+  nf	127.0.2.62
+  ng	127.0.2.54
+  ni	127.0.2.46
+  nl	127.0.2.16
+  no	127.0.2.66
+  np	127.0.2.12
+  nr	127.0.2.8
+  nu	127.0.2.58
+  nz	127.0.2.42
+  om	127.0.2.0
+  pa	127.0.2.79
+  pe	127.0.2.92
+  pf	127.0.1.2
+  pg	127.0.2.86
+  ph	127.0.2.96
+  pk	127.0.2.74
+  pl	127.0.2.104
+  pm	127.0.2.154
+  pn	127.0.2.100
+  pr	127.0.2.118
+  pt	127.0.2.108
+  pw	127.0.2.73
+  py	127.0.2.88
+  qa	127.0.2.122
+  re	127.0.2.126
+  ro	127.0.2.130
+  ru	127.0.2.131
+  rw	127.0.2.134
+  sa	127.0.2.170
+  sb	127.0.0.90
+  sc	127.0.2.178
+  sd	127.0.2.224
+  se	127.0.2.240
+  sg	127.0.2.190
+  sh	127.0.2.142
+  si	127.0.2.193
+  sj	127.0.2.232
+  sk	127.0.2.191
+  sl	127.0.2.182
+  sm	127.0.2.162
+  sn	127.0.2.174
+  so	127.0.2.194
+  sr	127.0.2.228
+  st	127.0.2.166
+  sv	127.0.0.222
+  sy	127.0.2.248
+  sz	127.0.2.236
+  tc	127.0.3.28
+  td	127.0.0.148
+  tf	127.0.1.4
+  tg	127.0.3.0
+  th	127.0.2.252
+  tj	127.0.2.250
+  tk	127.0.3.4
+  tm	127.0.3.27
+  tn	127.0.3.20
+  to	127.0.3.8
+  tp	127.0.2.114
+  tr	127.0.3.24
+  tt	127.0.3.12
+  tv	127.0.3.30
+  tw	127.0.0.158
+  tz	127.0.3.66
+  ua	127.0.3.36
+  ug	127.0.3.32
+  uk	127.0.3.58
+  um	127.0.2.69
+  us	127.0.3.72
+  uy	127.0.3.90
+  uz	127.0.3.92
+  va	127.0.1.80
+  vc	127.0.2.158
+  ve	127.0.3.94
+  vg	127.0.0.92
+  vi	127.0.3.82
+  vn	127.0.2.192
+  vu	127.0.2.36
+  wf	127.0.3.108
+  ws	127.0.3.114
+  ye	127.0.3.119
+  yt	127.0.0.175
+  yu	127.0.3.123
+  za	127.0.2.198
+  zm	127.0.3.126
+  zr	127.0.0.180
+  zw	127.0.2.204
 );
 
 sub zone {
   my ($self, $code) = @_;
-  Carp::croak("unknown code $code ") unless exists $zone{$code};
+  Carp::croak("unknown code $code") unless exists $zone{$code};
 
   $zone{ $code } = Net::Continental::Zone->_new([ $code, @{ $zone{ $code } } ])
     unless blessed $zone{ $code };
