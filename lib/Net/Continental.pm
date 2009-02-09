@@ -2,10 +2,11 @@ use strict;
 use warnings;
 
 package Net::Continental;
+use Carp ();
 use Net::Domain::TLD;
 use Scalar::Util qw(blessed);
 
-my %Continent = (
+our %Continent = (
   N => 'North America',
   S => 'South America',
   E => 'Europe',
@@ -278,6 +279,14 @@ my %zone = (
   ve => [ 1 => S => q{Venezuela} ],
 );
 
-sub zones { \%zone }
+sub zone {
+  my ($self, $code) = @_;
+  Carp::croak("unknown code $code ") unless exists $zone{$code};
+
+  $zone{ $code } = Net::Continental::Zone->_new($zone{ $code })
+    unless blessed $zone{ $code };
+
+  return $zone{ $code };
+}
 
 1;
