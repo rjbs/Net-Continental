@@ -6,7 +6,7 @@ use Carp ();
 use Net::Continental::Zone;
 use Scalar::Util qw(blessed);
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 our %Continent = (
   N => 'North America',
