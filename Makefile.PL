@@ -1,7 +1,7 @@
 use inc::Module::Install;
 all_from('lib/Net/Continental.pm');
 
-requires('Carp'             => 0);
+# requires('Carp'             => 0); #wth, this caused problems in xpan
 requires('Net::Domain::TLD' => 0);
 requires('Scalar::Util'     => 0);
 
