@@ -3,7 +3,6 @@ use warnings;
 
 package Net::Continental;
 use Carp ();
-use Net::Domain::TLD;
 use Scalar::Util qw(blessed);
 
 our %Continent = (
@@ -283,7 +282,7 @@ sub zone {
   my ($self, $code) = @_;
   Carp::croak("unknown code $code ") unless exists $zone{$code};
 
-  $zone{ $code } = Net::Continental::Zone->_new($zone{ $code })
+  $zone{ $code } = Net::Continental::Zone->_new([ $code, @{ $zone{ $code } } ])
     unless blessed $zone{ $code };
 
   return $zone{ $code };
