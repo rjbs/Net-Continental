@@ -1,7 +1,7 @@
 use strict;
 use warnings;
-
 package Net::Continental;
+
 use Carp ();
 use Net::Continental::Zone;
 use Scalar::Util qw(blessed);
@@ -18,7 +18,7 @@ our %Continent = (
   Q => 'Antarctica',
 );
 
-# qw(continent description)
+#         qw(continent description)
 
 my %zone = (
   ac => [ F => q{Ascension Island} ],
@@ -524,6 +524,22 @@ our %nerd_response = qw(
   zw	127.0.2.204
 );
 
+=head1 NAME
+
+Net::Continental - IP addresses of the world, by country and continent
+
+=head1 METHODS
+
+=head2 zone
+
+  # Get the zone for the US.
+  my $zone = Net::Continental->zone('us');
+
+This returns a L<Net::Continental::Zone> object for the given code.  Zone codes
+are generally the same as ISO codes or country-code top level domains.
+
+=cut
+
 sub zone {
   my ($self, $code) = @_;
   Carp::croak("unknown code $code") unless exists $zone{$code};
@@ -534,8 +550,32 @@ sub zone {
   return $zone{ $code };
 }
 
+=head2 known_zone_codes
+
+  my @codes = Net::Continental->known_zone_codes;
+
+This returns a list of all known zone codes, in no particular order.
+
+=cut
+
 sub known_zone_codes {
   return keys %zone
 }
+
+=head1 AUTHOR
+
+This code was written in 2009 by Ricardo SIGNES.
+
+The development of this code was sponsored by Pobox.com.  Thanks, Pobox!
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2009 by Ricardo SIGNES
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
+
+=cut
+
 
 1;
