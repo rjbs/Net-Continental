@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 use Net::Continental;
 
@@ -23,6 +23,9 @@ use Net::Continental;
   like($zone->description, qr{metropol}i, 'fx is Metropolitan France');
   ok(! $zone->is_tld, 'fx is not a tld');
   ok($zone->in_nerddk, 'fx is supported by nerd.dk');
+
+  my $reget = Net::Continental->zone_for_nerd_ip($zone->nerd_response);
+  is($reget->code, $zone->code, "round trip by IP");
 }
 
 {

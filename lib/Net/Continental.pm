@@ -6,7 +6,7 @@ use Carp ();
 use Net::Continental::Zone;
 use Scalar::Util qw(blessed);
 
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 our %Continent = (
   N => 'North America',
@@ -523,6 +523,8 @@ our %nerd_response = qw(
   zw	127.0.2.204
 );
 
+our %ip_country = reverse %nerd_response;
+
 =head1 NAME
 
 Net::Continental - IP addresses of the world, by country and continent
@@ -547,6 +549,21 @@ sub zone {
     unless blessed $zone{ $code };
 
   return $zone{ $code };
+}
+
+=head2 zone_for_nerd_ip
+
+  # get the zone for nerd's response for the US
+  my $zone = Net::Continental->zone_for_nerd_ip('127.0.3.72');
+
+=cut
+
+sub zone_for_nerd_ip {
+  my ($self, $ip) = @_;
+
+  Carp::croak("unknown nerd ip $ip") unless exists $ip_country{$ip};
+
+  return $self->zone($ip_country{ $ip });
 }
 
 =head2 known_zone_codes
