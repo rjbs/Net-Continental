@@ -3,7 +3,7 @@ use warnings;
 no warnings 'once';
 package Net::Continental::Zone;
 
-our $VERSION = '0.003';
+our $VERSION = '0.005';
 
 use Net::Domain::TLD ();
 
