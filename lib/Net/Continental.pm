@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 package Net::Continental;
+# ABSTRACT: code to map countries to continents, esp. with nerd.dk dnsbl
 
 use Carp ();
 use Net::Continental::Zone;
@@ -587,13 +588,6 @@ sub known_zone_codes {
 This code was written in 2009 by Ricardo SIGNES.
 
 The development of this code was sponsored by Pobox.com.  Thanks, Pobox!
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2009 by Ricardo SIGNES
-
-This library is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
 
 =cut
 
