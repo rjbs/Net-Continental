@@ -1,4 +1,6 @@
 Release history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.007     2013-06-18 11:02:33 America/New_York
           first release on CPAN
