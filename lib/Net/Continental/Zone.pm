@@ -4,6 +4,7 @@ no warnings 'once';
 package Net::Continental::Zone;
 # ABSTRACT: a zone of IP space
 
+use Locale::Codes::Country ();
 use Net::Domain::TLD ();
 
 =method new
@@ -47,8 +48,25 @@ This returns true if the zone code is also a country code TLD.
 =cut
 
 sub code          { $_[0][0] }
-sub in_nerddk     { defined $Net::Continental::nerd_response{ $_[0][0] } }
-sub nerd_response { $Net::Continental::nerd_response{ $_[0][0] } }
+
+sub in_nerddk     {
+  Carp::cluck("in_nerddk method is deprecated");
+  return defined $_[0]->nerd_response;
+}
+
+sub nerd_response {
+  my ($self) = @_;
+  my $n = Locale::Codes::Country::country_code2code(
+    $self->code,
+    'alpha-2',
+    'numeric',
+  );
+  return unless $n;
+  my $top = $n >> 8;
+  my $bot = $n % 256;
+  return "127.0.$top.$bot";
+}
+
 sub continent     { $Net::Continental::Continent{ $_[0][1] } }
 sub description   { $_[0][2] }
 sub is_tld        { Net::Domain::TLD::tld_exists($_[0][0], 'cc'); }
