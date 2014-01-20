@@ -57,19 +57,14 @@ sub in_nerddk     {
 sub nerd_response {
   my ($self) = @_;
 
-  my $country = Locale::Codes::Country::code2country(
+  my $n = Locale::Codes::Country::country_code2code(
     $self->code,
     'alpha-2',
-    'retired',
-  );
-
-  return unless $country;
-
-  my $n = Locale::Codes::Country::country2code(
-    $country,
     'numeric',
-    'retired',
   );
+
+  # coping with broken(?) Locale::Codes::Country -- rjbs, 2014-01-20
+  $n = 158 if $self->code eq 'tw';
 
   return unless $n;
   my $top = $n >> 8;
@@ -80,5 +75,9 @@ sub nerd_response {
 sub continent     { $Net::Continental::Continent{ $_[0][1] } }
 sub description   { $_[0][2] }
 sub is_tld        { Net::Domain::TLD::tld_exists($_[0][0], 'cc'); }
+
+sub tld           {
+  return $_[0][3] if Net::Domain::TLD::tld_exists($_[0][3], 'cc');
+}
 
 1;

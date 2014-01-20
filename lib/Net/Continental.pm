@@ -18,10 +18,6 @@ our %Continent = (
   Q => 'Antarctica',
 );
 
-my %zone_alias = (
-  gb => 'uk',
-);
-
 #         qw(continent description)
 
 my %zone = (
@@ -134,7 +130,7 @@ my %zone = (
   sk => [ E => q{Slovak Republic} ],
   sm => [ E => q{San Marino} ],
   ua => [ E => q{Ukraine} ],
-  uk => [ E => q{United Kingdom} ],
+  # uk => [ E => q{United Kingdom} ],
   va => [ E => q{Holy See (City Vatican State)} ],
   yu => [ E => q{Yugoslavia} ],
 
@@ -301,18 +297,31 @@ Net::Continental - IP addresses of the world, by country and continent
   # Get the zone for the US.
   my $zone = Net::Continental->zone('us');
 
-This returns a L<Net::Continental::Zone> object for the given code.  Zone codes
-are generally the same as ISO codes or country-code top level domains.
+This returns a L<Net::Continental::Zone> object for the given ISO code.
 
 =cut
 
+my %tld_for_code = (gb => 'uk');
+my %code_for_tld = reverse %tld_for_code;
+
 sub zone {
   my ($self, $code) = @_;
-  $code = $zone_alias{$code} if $zone_alias{$code};
+
+  unless (exists $zone{$code}) {
+    $code = $code_for_tld{$code}
+      if exists $code_for_tld{$code}
+      && exists $zone{ $code_for_tld{ $code } };
+  }
+
   Carp::croak("unknown code $code") unless exists $zone{$code};
 
-  $zone{ $code } = Net::Continental::Zone->_new([ $code, @{ $zone{ $code } } ])
-    unless blessed $zone{ $code };
+  unless (blessed $zone{ $code }) {
+    $zone{ $code } = Net::Continental::Zone->_new([
+      $code,
+      @{ $zone{ $code } },
+      $tld_for_code{ $code } || $code,
+    ])
+  }
 
   return $zone{ $code };
 }
