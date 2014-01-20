@@ -16,6 +16,16 @@ use Net::Continental;
 }
 
 {
+  my $zone = Net::Continental->zone('tw');
+
+  isa_ok($zone, 'Net::Continental::Zone');
+  is($zone->code, 'tw', 'tw is tw');
+  like($zone->description, qr{Taiwan}i, 'tw is Taiwan');
+  ok($zone->is_tld, 'tw is a tld');
+  is($zone->nerd_response, '127.0.0.158', 'tw has expected nerd response');
+}
+
+{
   my $zone = Net::Continental->zone('ax');
 
   isa_ok($zone, 'Net::Continental::Zone');

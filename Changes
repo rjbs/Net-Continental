@@ -1,6 +1,7 @@
 Release history for {{$dist->name}}
 
 {{$NEXT}}
+        - provide nerd.dk responses even for retired alpha-2 codes
 
 0.009     2014-01-20 13:13:44-05:00 America/New_York
         - nerd.dk responses are now interpreted by the IP value, rather

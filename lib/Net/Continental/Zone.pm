@@ -56,11 +56,21 @@ sub in_nerddk     {
 
 sub nerd_response {
   my ($self) = @_;
-  my $n = Locale::Codes::Country::country_code2code(
+
+  my $country = Locale::Codes::Country::code2country(
     $self->code,
     'alpha-2',
-    'numeric',
+    'retired',
   );
+
+  return unless $country;
+
+  my $n = Locale::Codes::Country::country2code(
+    $country,
+    'numeric',
+    'retired',
+  );
+
   return unless $n;
   my $top = $n >> 8;
   my $bot = $n % 256;
