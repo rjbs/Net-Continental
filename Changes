@@ -1,7 +1,13 @@
 Release history for {{$dist->name}}
 
 {{$NEXT}}
-        - provide nerd.dk responses even for retired alpha-2 codes
+
+0.010     2014-01-20 16:51:01-05:00 America/New_York
+        - provide a nerd_dk response even for retired Taiwan; some other
+          countries are not yet handled; for more information, see
+          https://rt.cpan.org/Ticket/Display.html?id=92303
+        - more clearly handle the gb-vs-uk conflict by making "code" always
+          mean ISO code
 
 0.009     2014-01-20 13:13:44-05:00 America/New_York
         - nerd.dk responses are now interpreted by the IP value, rather
