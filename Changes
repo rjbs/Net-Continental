@@ -1,6 +1,8 @@
 Release history for {{$dist->name}}
 
 {{$NEXT}}
+        - nerd.dk responses are now interpreted by the IP value, rather
+          than lookup in a list
 
 0.008     2013-10-06 22:47:18 America/New_York
           update bugtracker

@@ -23,7 +23,8 @@ This returns the zone's zone code.
 
 =method in_nerddk
 
-This is true if the nerd.dk country blacklist has an entry for this zone.
+This is true if the nerd.dk country blacklist is capable, using its encoding
+scheme, of indicating a hit from this country.
 
 =method nerd_response
 
@@ -50,7 +51,6 @@ This returns true if the zone code is also a country code TLD.
 sub code          { $_[0][0] }
 
 sub in_nerddk     {
-  Carp::cluck("in_nerddk method is deprecated");
   return defined $_[0]->nerd_response;
 }
 
