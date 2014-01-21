@@ -340,7 +340,7 @@ sub zone_for_nerd_ip {
   my $cc = ($top << 8) + $bot;
 
   my $code = Locale::Codes::Country::country_code2code(
-    $self->code,
+    $cc,
     'numeric',
     'alpha-2',
   );

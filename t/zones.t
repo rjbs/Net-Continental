@@ -57,6 +57,11 @@ use Net::Continental;
 }
 
 {
+  my $zone = Net::Continental->zone_for_nerd_ip('127.0.3.72');
+  is($zone ? $zone->code : undef, 'us', "127.0.3.72 means US ip");
+}
+
+{
   my $zone = eval { Net::Continental->zone('oo') };
 
   ok(! $zone, "there is no oo zone");
