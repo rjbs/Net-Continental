@@ -1,6 +1,8 @@
 Release history for {{$dist->name}}
 
 {{$NEXT}}
+        - require Locale::Country 3.29, which restore previously-retired
+          numeric codes
 
 0.012     2014-01-21 22:15:23-05:00 America/New_York
         - fix links to github (was using wrong user)

@@ -4,7 +4,7 @@ no warnings 'once';
 package Net::Continental::Zone;
 # ABSTRACT: a zone of IP space
 
-use Locale::Codes::Country ();
+use Locale::Codes::Country 3.29 ();
 use Net::Domain::TLD ();
 
 =method new
@@ -62,9 +62,6 @@ sub nerd_response {
     'alpha-2',
     'numeric',
   );
-
-  # coping with broken(?) Locale::Codes::Country -- rjbs, 2014-01-20
-  $n = 158 if $self->code eq 'tw';
 
   return unless $n;
   my $top = $n >> 8;
