@@ -62,6 +62,12 @@ use Net::Continental;
 }
 
 {
+  my $zone = eval { Net::Continental->zone_for_nerd_ip() };
+
+  ok(! $zone, "you can't get the zone for a non-IP");
+}
+
+{
   my $zone = eval { Net::Continental->zone('oo') };
 
   ok(! $zone, "there is no oo zone");

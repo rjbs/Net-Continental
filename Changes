@@ -1,6 +1,8 @@
 Release history for {{$dist->name}}
 
 {{$NEXT}}
+        - forbid asking for the zone for a nerd IP when the IP is bogus or
+          undefined (which is bogus)
 
 0.013     2014-01-27 15:13:49-05:00 America/New_York
         - require Locale::Country 3.29, which restore previously-retired

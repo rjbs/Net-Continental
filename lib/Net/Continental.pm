@@ -336,7 +336,17 @@ sub zone {
 sub zone_for_nerd_ip {
   my ($self, $ip) = @_;
 
-  my ($top, $bot) = $ip =~ /\A127\.0\.([0-9]+)\.([0-9]+)\z/;
+  my ($matched, $top, $bot);
+  $matched = do {
+    no warnings 'uninitialized';
+    ($top, $bot) = $ip =~ /\A127\.0\.([0-9]+)\.([0-9]+)\z/;
+  };
+
+  unless ($matched) {
+    my $str = defined $ip ? $ip : '(undef)';
+    Carp::croak("invalid input to zone_for_nerd_ip: $str");
+  }
+
   my $cc = ($top << 8) + $bot;
 
   my $code = Locale::Codes::Country::country_code2code(
