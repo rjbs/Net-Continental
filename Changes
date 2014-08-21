@@ -1,6 +1,8 @@
 Release history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.014     2014-08-21 11:52:04-04:00 America/New_York
         - forbid asking for the zone for a nerd IP when the IP is bogus or
           undefined (which is bogus)
 
