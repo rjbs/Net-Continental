@@ -2,6 +2,12 @@ Release history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.015     2015-01-22 19:14:29-05:00 America/New_York
+        - Sometimes, a country's continent is in dispute.  Georgia, for
+          example, is famously disputed.  Other times, we're just dead wrong,
+          as we were with Bolivia, Colombia, and Ecuador.  What happened?  We
+          don't remember, it was a long time ago.  Fixed now!
+
 0.014     2014-08-21 11:52:04-04:00 America/New_York
         - forbid asking for the zone for a nerd IP when the IP is bogus or
           undefined (which is bogus)
