@@ -275,6 +275,7 @@ my %zone = (
   br => [ S => q{Brazil} ],
   cl => [ S => q{Chile} ],
   co => [ S => q{Colombia} ],
+  cw => [ S => q{Curacao} ],
   ec => [ S => q{Ecuador} ],
   fk => [ S => q{Falkland Islands (Malvina)} ],
   gf => [ S => q{French Guiana} ],
